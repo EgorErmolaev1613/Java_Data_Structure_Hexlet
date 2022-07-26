@@ -1,14 +1,6 @@
 package org.hexlet.JavaDataStructure.lesson7;
+//ВЕРСИЯ 2
 
-//В этом задании вам предстоит самостоятельно реализовать двунаправленный (двусвязный) лист: LinkedList.
-//        Он сложнее чем однонаправленный. Для того, чтобы понять,
-//        какие типы листов бывают и какой именно вы реализуете, можно заглянуть сюда.
-//
-//        В вашем распоряжении есть вложенный класс LinkedList.Item,
-//        который вы должны использовать для реализации почти всех методов интерфейса List.
-//
-//        Для упрощения задачи - тела некоторых методов уже наполнены кодом.
-//        Dам нужно реализовать только добавление и удаление нового элемента в список.
 
 import java.util.Objects;
 import java.util.List;
@@ -18,7 +10,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 
-public class LinkedList<T> implements List<T> {
+public class LinkedList2<T> implements List<T> {
 
     private Item<T> firstInList = null;
 
@@ -87,19 +79,20 @@ public class LinkedList<T> implements List<T> {
     @Override
     public final boolean add(final T newElement) {
         // BEGIN (write your solution here)
-        addLast(newElement);
+        if (this.size() == 0) {
+            this.firstInList = new Item<>(newElement, null, null);
+            this.lastInList = firstInList;
+        } else if (this.size() == 1) {
+            this.lastInList = new Item<>(newElement, this.firstInList, null);
+            this.firstInList.nextItem = this.lastInList;
+        } else {
+            final Item<T> newLast = new Item<>(newElement, this.lastInList, null);
+            this.lastInList.nextItem = newLast;
+            this.lastInList = newLast;
+        }
+        size++;
         return true;
         // END
-    }
-    public void addLast (T value) {
-        Item<T> node = new Item<T> (value,null,null);
-        if (size == 0){
-            firstInList = node;
-
-        }else {lastInList.nextItem = node;
-            node.prevItem = lastInList;}
-        lastInList = node;
-        size++;
     }
 
     @Override
@@ -107,104 +100,103 @@ public class LinkedList<T> implements List<T> {
         throw new UnsupportedOperationException();
     }
 
-    public void removeLast () {
-        if (size !=0) {
-            if (size == 1){
-                firstInList = null;
-                lastInList = null;
-            }
-            else {
-                lastInList.prevItem.nextItem = null;
-                lastInList = lastInList.prevItem;
-            }
-
-            size--;
-        }
-    }
-
     @Override
     public final boolean remove(final Object o) {
-        Item<T> prev = null;
-        Item<T> current = firstInList;
-        while (current != null)
-        {
-            if (current.element.equals(o))
-            {
-                if (prev != null)
-                {
-                    prev.nextItem = current.nextItem;
-                    if (current.nextItem==null)
-                    {
-                        lastInList = prev;
-                    }
-                    else {
-                        current.nextItem.prevItem = prev;
-                    }
-                    size--;
-                }
-                else {
-                    removeFirst();
-                }
-                return true;
-            }
-            prev = current;
+        // BEGIN (write your solution here)
+        if (size == 0) {
+            return false;
+        }
+
+        Item<T> current = this.firstInList;
+        while (current.nextItem != null && !current.element.equals(o)) {
             current = current.nextItem;
         }
+
+        if (current.element.equals(o)) {
+            if (this.size() == 1) {
+                this.firstInList = null;
+                this.lastInList = null;
+            } else {
+                if (current == firstInList) {
+                    firstInList = current.nextItem;
+                    firstInList.prevItem = null;
+                }
+                if (current == lastInList) {
+                    lastInList = current.prevItem;
+                    lastInList.nextItem = null;
+                }
+                if (current.nextItem != null && current.prevItem != null) {
+                    current.prevItem.nextItem = current.nextItem;
+                    current.nextItem.prevItem = current.prevItem;
+                }
+            }
+            size--;
+            return true;
+        }
         return false;
+        // END
     }
 
-    public void removeFirst() {
-        if (size != 0) {
-            firstInList = firstInList.nextItem;
-            size--;
-            if (size == 0){
-                lastInList =null;
-            }
-            else {
-                firstInList.prevItem = null;
-            }
-        }
-    }
     @Override
     public final T remove(final int index) throws IndexOutOfBoundsException {
         // BEGIN (write your solution here)
-
-        if (index < 0 || index >= size()) {
+        int i = 0;
+        if (size <= index || index < 0) {
             throw new IndexOutOfBoundsException();
         }
-        Item<T> ref = firstInList;
-        for (int i =0; i <index; i++){
-            ref = ref.nextItem;
+        Item<T> current = this.firstInList;
+
+        while (i != index) {
+            current = current.nextItem;
+            i++;
         }
-        if (index ==0){
-            firstInList = ref.nextItem;
-        }else {
-            ref.prevItem.nextItem = ref.nextItem;
+
+        if (current != null) {
+            if (this.size() == 1) {
+                this.firstInList = null;
+                this.lastInList = null;
+            } else {
+                if (current == firstInList) {
+                    firstInList = current.nextItem;
+                    firstInList.prevItem = null;
+                }
+                if (current == lastInList) {
+                    lastInList = current.prevItem;
+                    lastInList.nextItem = null;
+                }
+                if (current.nextItem != null && current.prevItem != null) {
+                    current.prevItem.nextItem = current.nextItem;
+                    current.nextItem.prevItem = current.prevItem;
+                }
+            }
+            size--;
+            return current.element;
         }
-        size--;
-        return ref.element;
+        return null;
+        // END
     }
 
     private void remove(final Item<T> current) {
         // BEGIN (write your solution here)
-        Item<T> prev = null;
-        Item<T> currentItem = firstInList;
-        while (currentItem != null) {
-            if (currentItem.element.equals(current)) {
-                if (prev != null) {
-                    prev.nextItem = currentItem.nextItem;
-                    if (current.nextItem == null) {
-                        lastInList = prev;
-                    }
-                } else {
-                    currentItem.nextItem.prevItem = prev;
-                }
-                size--;
+        if (current != null) {
+            if (this.size() == 1) {
+                this.firstInList = null;
+                this.lastInList = null;
             } else {
-                removeFirst();
+                if (current == firstInList) {
+                    firstInList = current.nextItem;
+                    firstInList.prevItem = null;
+                }
+                if (current == lastInList) {
+                    lastInList = current.prevItem;
+                    lastInList.nextItem = null;
+                }
+                if (current.nextItem != null && current.prevItem != null) {
+                    current.prevItem.nextItem = current.nextItem;
+                    current.nextItem.prevItem = current.prevItem;
+                }
             }
-            prev = currentItem;
-            currentItem = currentItem.nextItem;
+            size--;
         }
         // END
     }
@@ -345,7 +337,7 @@ public class LinkedList<T> implements List<T> {
 
         @Override
         public T next() {
-            if (!hasNext()|| isEmpty()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
 
@@ -410,7 +402,7 @@ public class LinkedList<T> implements List<T> {
             if (lastReturnedItemFromIterator == null) {
                 throw new IllegalStateException();
             }
-            LinkedList.this.remove(lastReturnedItemFromIterator);
+            LinkedList2.this.remove(lastReturnedItemFromIterator);
             lastReturnedItemFromIterator = null;
             index--;
         }
@@ -439,3 +431,4 @@ public class LinkedList<T> implements List<T> {
         }
     }
 }
+
