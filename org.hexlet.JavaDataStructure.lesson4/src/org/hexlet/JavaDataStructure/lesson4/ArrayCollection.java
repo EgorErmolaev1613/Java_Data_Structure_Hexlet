@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 //
 //        Поэтому он имеет ключевое слово default.
 //        Но никто не запрещает его переопределить в конкретной реализации интерфейса,
-//        если в этом есть необходимость.
+//        если в этом есть необходимость..
 public final class ArrayCollection<T> implements Collection<T> {
 
     private T[] baseArray = (T[]) new Object[1];
