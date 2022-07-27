@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Iterator;
 
-// Реализовать следующий метод <T> T[] toArray(T[] a)
+// Реализовать  метод <T> T[] toArray(T[] a)
 
 public class ArrayCollection<T> implements Collection<T> {
 
