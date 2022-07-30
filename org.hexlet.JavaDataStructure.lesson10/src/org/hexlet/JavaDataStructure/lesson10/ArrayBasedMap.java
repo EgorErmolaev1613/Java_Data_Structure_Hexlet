@@ -31,7 +31,7 @@ package org.hexlet.JavaDataStructure.lesson10;
 
 import java.util.*;
 
-public class ArrayBasedMap<K, V> implements Map<K, V> {
+public class ArrayBasedMap<K, V> implements Map<K, V>  {
 
     private final List<Pair> keyAndValues = new ArrayList<>();
 
