@@ -15,7 +15,7 @@ public class Main {
         newGroup.addStudentToGroup(st1);
         newGroup.addStudentToGroup(st2);
         GroupFileStorage nw = new GroupFileStorage();
-        nw.saveGroupToCSV(newGroup);
+        nw.saveGroupToCSV2(newGroup);
         File file = new File ("firstGroup.CSV");
         Group ne = nw.loadGroupFromCSV(file);
         ne.printStudents();

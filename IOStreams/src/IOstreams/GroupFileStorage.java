@@ -3,7 +3,7 @@ package IOstreams;
 import java.io.*;
 import java.util.Scanner;
 
-public class GroupFileStorage {
+     public class GroupFileStorage {
 
 
     public void saveGroupToCSV(Group gr) {
@@ -26,17 +26,37 @@ public class GroupFileStorage {
 
     public Group loadGroupFromCSV(File fl) throws FileNotFoundException {
         Group newGroup = new Group(fl.getName());
+        String result = "";
+        String [] stud = new String [10];
         try (FileReader reader = new FileReader(fl)) {
             Scanner cr = new Scanner(reader);
-            while (cr.hasNextLine()){
-                Student newStudent = new Student(0,null);
-                newStudent.setId(Integer.parseInt(cr.nextLine()));
-                newStudent.setFirstName(cr.nextLine());
-                newGroup.addStudentToGroup(newStudent);
+            for (;cr.hasNextLine();){
+            result += cr.nextLine()+System.lineSeparator();
+            stud = result.split(";");
+            Student st = new Student(0,null);
+            st.setId(Integer.parseInt(stud[0]));
+            st.setFirstName(stud[1]);
+            newGroup.addStudentToGroup(st);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return newGroup;
     }
-}
+    public void saveGroupToCSV2(Group gr) {
+        String str = gr.getName() + ".csv";
+        File fileCSV = new File(str);
+        try (PrintWriter pw = new PrintWriter(fileCSV)) {
+            for(int i = 0; i < gr.sizeOfGroup();i++){
+                pw.println(gr.students.get(i).getId()+ ";"+
+                        gr.students.get(i).getFirstName());
+            }
+
+            } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    }
+
+

@@ -38,4 +38,5 @@ public class Group {
     public int sizeOfGroup () {
         return students.size();
     }
+
 }
